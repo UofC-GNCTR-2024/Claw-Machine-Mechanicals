@@ -21,26 +21,31 @@
 // ------------------------
 // Idler profile parameters
 // ------------------------
-number_of_teeth = 10; // [10:100]
-profile = 1; // [1:MXL, 2:40DP, 3:XL, 4:H, 5:T2.5, 6:T5, 7:T10, 8:AT5, 9:HTD_3mm, 10:HTD_5mm, 11:HTD_8mm, 12:GT2_2mm, 13:GT2_3mm, 14:GT2_5mm]
-motor_shaft_diameter = 5; // (in mm)
-toothed_part_length = 6.2; // [3:30] (in mm)
+number_of_teeth = 20; // [10:100]
+profile = 0; // [1:MXL, 2:40DP, 3:XL, 4:H, 5:T2.5, 6:T5, 7:T10, 8:AT5, 9:HTD_3mm, 10:HTD_5mm, 11:HTD_8mm, 12:GT2_2mm, 13:GT2_3mm, 14:GT2_5mm]
+motor_shaft_diameter = 4; // (in mm)
+toothed_part_length = 10; // [3:30] (in mm)
+// note that the flanges add additional usable length to the toothed_part_length
+
+// base refers to the part with the screws
 base_height = 8; // [0:30] (in mm)
 base_diameter = 20;   // [10:50] (in mm)
+
+my_pulley_d = 25;
 
 // ---------------------------
 // Idler & retainer parameters
 // ---------------------------
 belt_retainer = 1; // [0:No, 1:Yes]
-retainer_height_p = 1.5; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
+retainer_height_p = 10; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
 belt_idler = 1; // [0:No, 1:Yes]
 // Height of idler flange over pulley. Set to same as base height if you want an idler but no pulley.
-idler_height_p = 1.5; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
+idler_height_p = 10; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
 
 // ---------------
 // Shaft fastening
 // ---------------
-screws_disposition = 2; // [0:None, 1:1 screw, 2:2 screws at 90deg, 3:3 screws at 120deg, 4:4 screws at 90deg]
+screws_disposition = 1; // [0:None, 1:1 screw, 2:2 screws at 90deg, 3:3 screws at 120deg, 4:4 screws at 90deg]
 nut_shape = 1; // [1:Hexagonal, 0:Square]
 screw_profile = 4; // [0:M1, 1:M1.6, 2:M2, 3:M2.5, 4:M3, 5:M4, 6:M5, 7:M6]
 // Distance between inner face of nut and shaft - can be negative - (in mm).
@@ -107,6 +112,7 @@ GT2_2mm_pulley_dia = tooth_spacing (2,0.254);
 GT2_3mm_pulley_dia = tooth_spacing (3,0.381);
 GT2_5mm_pulley_dia = tooth_spacing (5,0.5715);
 // The following calls the pulley creation part, and passes the pulley diameter and tooth width to that module
+if ( profile == 0 ) {pulley("No Teeth" , my_pulley_d , 1, 1 ); }
 if ( profile == 1 ) {pulley("MXL" , MXL_pulley_dia , 0.508 , 1.321 ); }
 if ( profile == 2 ) {pulley("40 D.P." , 40DP_pulley_dia , 0.457 , 1.226 ); }
 if ( profile == 3 ) {pulley("XL" , XL_pulley_dia , 1.27, 3.051 ); }
