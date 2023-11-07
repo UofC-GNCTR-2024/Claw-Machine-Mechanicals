@@ -15,7 +15,7 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
     * Distance between M3 screw holes: 17mm
     * OD of Shaft: 4mm
     * Shaft Flat Part, from OD to key: 3.2mm
-    * Shaft Length: 8mm
+    * Shaft Length, excluding collar: 8mm
     * Shaft Collar Length: 3mm
 4. 3x NEMA 17 Motors
 5. Claw
@@ -28,6 +28,7 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
     * Also includes mount for the Y-Axis motor and limit switch, on one side
 3. Mount from Y-Axis linear bearings to the Z-Axis motor
 4. Idlers for X-Axis
+5. Drag Chain
 
 
 ## Axis Definitions
