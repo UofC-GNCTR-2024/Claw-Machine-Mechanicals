@@ -12,6 +12,7 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
     * [Purchase Link](https://www.aliexpress.com/item/4001314473291.html)
     * OD of Gearbox: 24.6mm
     * Length of Motor and Gearbox: 58.2mm
+    * Length of Gearbox: 19mm
     * Distance between M3 screw holes: 17mm
     * OD of Shaft: 4mm
     * Shaft Flat Part, from OD to key: 3.2mm
