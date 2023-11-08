@@ -22,6 +22,8 @@ stepper_hole_sep = 31;
 stepper_shaft_clearance_d = 22+5;
 stepper_hole_d = 3.5;
 
+// TODO: add limit switch, maybe
+
 screw_d = 3.5;
 
 $fn = 60;

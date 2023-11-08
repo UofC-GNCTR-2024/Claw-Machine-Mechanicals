@@ -12,7 +12,7 @@ bolt_d = 3 + 0.3;
 nut_w = 5.5 + 0.5;
 nut_t = 2.4 + 0.3;
 
-dist_top_to_rail_center = 30; // FIXME: set dist_top_to_rail_center value based on the motor mount geometry
+dist_top_to_rail_center = 30; // based on metal motor mount geometry
 
 limit_screw_d = 1.9; // M2 thread-forming
 limit_screw_l = 12; // FIXME: set limit_screw_l

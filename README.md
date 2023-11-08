@@ -22,6 +22,11 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
 5. Claw
     * Comes with rope
     * 12V solenoid drive
+6. NEMA17 Bracket Mount
+    * [Purchase Link](https://www.aliexpress.com/item/1005004497928051.html) (wth drawing)
+    * Distance from bolted plate to center of motor: 30mm
+    * Motor screw diameter: M3
+    * Slotted screw size: up to M4
 
 ## Parts to Construct
 1. Pulley for Z-Axis Rope (`idler_pulley.scad`)
@@ -43,4 +48,4 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
 2. Y-Axis = perpendicular to the side with two separated motors/linear rails (claw attaches to Y-Axis)
 3. Z-Axis = raise and lower
 
-TODO: add photo
+TODO: add photo of axes
