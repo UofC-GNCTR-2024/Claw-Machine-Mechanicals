@@ -23,12 +23,18 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
     * 12V solenoid drive
 
 ## Parts to Construct
-1. Pulley for Z-Axis Rope
-2. Rail mounts to Top (for X-Axis rails)
-    * Also includes mount for the Y-Axis motor and limit switch, on one side
-3. Mount from Y-Axis linear bearings to the Z-Axis motor
-4. Idlers for X-Axis
-5. Drag Chain
+1. Pulley for Z-Axis Rope (`idler_pulley.scad`)
+2. Rail mounts to Top for X-Axis rails (`x_ends.scad`)
+    * Also includes mount for the limit switchs
+3. Slider between X-Axis and Y-Axis (`xy_slider.scad`)
+    * Motor mount on one side, idler on the other
+    * Grip to X-Axit belt
+    * Linear Bearing holders for X-Axis
+    * Rail holders for Y-Axis rails
+    * Limit Switch Mount
+4. Mount from Y-Axis linear bearings to the Z-Axis motor (`y_axis_sled.scad`)
+5. Idlers for X-Axis (`x_end_idler.scad`)
+6. Drag Chain (`drag_chain_link.scad`)
 
 
 ## Axis Definitions
