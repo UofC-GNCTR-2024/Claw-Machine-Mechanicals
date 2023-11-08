@@ -10,15 +10,18 @@ rail_split_size = 3;
 // Using M3 bolts and nuts
 bolt_d = 3 + 0.3;
 nut_w = 5.5 + 0.5;
-nut_t = 2.3 + 0.3;
+nut_t = 2.4 + 0.3;
 
-dist_top_to_rail_center = 30;
+dist_top_to_rail_center = 30; // FIXME: set dist_top_to_rail_center value based on the motor mount geometry
 
 limit_screw_d = 1.9; // M2 thread-forming
-limit_screw_l = 12; // FIXME: set value
-limit_screw_sep = 7; // FIXME: set value
+limit_screw_l = 12; // FIXME: set limit_screw_l
+limit_screw_sep = 7; // FIXME: set limit_screw_sep
 
-block_h = dist_top_to_rail_center+rail_d/2+6;
+//stepper_hole_sep = 31;
+//stepper_shaft_clearance_d = 22+5;
+
+block_h = dist_top_to_rail_center+rail_d/2+4;
 
 $fn = 60;
 
@@ -73,6 +76,9 @@ module x_end_with_limit_switch() {
 			// screw hole
 			zcyl(d=limit_screw_d, h=limit_screw_l, anchor=BOTTOM);
 		}
+
+		// remove stepper motor mounting holes
+
 	}
 
 }
