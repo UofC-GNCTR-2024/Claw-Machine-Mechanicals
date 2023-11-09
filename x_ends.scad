@@ -15,8 +15,8 @@ nut_t = 2.4 + 0.3;
 dist_top_to_rail_center = 30; // based on metal motor mount geometry
 
 limit_screw_d = 1.9; // M2 thread-forming
-limit_screw_l = 12; // FIXME: set limit_screw_l
-limit_screw_sep = 7; // FIXME: set limit_screw_sep
+limit_screw_l = 8;
+limit_screw_sep = 10;
 
 //stepper_hole_sep = 31;
 //stepper_shaft_clearance_d = 22+5;
@@ -33,6 +33,7 @@ module x_end_with_limit_switch() {
 			cuboid(
 				[30, 30, block_h],
 				anchor=TOP,
+				rounding=2, except=[BOTTOM, TOP],
 			);
 
 		}
