@@ -31,16 +31,17 @@ toothed_part_length = 10; // [3:30] (in mm)
 base_height = 8; // [0:30] (in mm)
 base_diameter = 20;   // [10:50] (in mm)
 
-my_pulley_d = 25;
+my_pulley_d = 18;
+my_rope_hole_d = 5;
 
 // ---------------------------
 // Idler & retainer parameters
 // ---------------------------
 belt_retainer = 1; // [0:No, 1:Yes]
-retainer_height_p = 10; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
+retainer_height_p = 8; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
 belt_idler = 1; // [0:No, 1:Yes]
 // Height of idler flange over pulley. Set to same as base height if you want an idler but no pulley.
-idler_height_p = 10; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
+idler_height_p = 8; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
 
 // ---------------
 // Shaft fastening
@@ -272,6 +273,9 @@ module pulley( belt_type , pulley_OD , tooth_depth , tooth_width ){
             cylinder(d=bolt_head_diam,h=bolt_head_height+0.1,$fn=6);
           }
         }
+
+        // Remove my_rope_hole
+        translate([5, 0, 20]) rotate([90,0,0]) cylinder(d=my_rope_hole_d, h=100, center=true, $fn=60);
       }
 //    }
 //  }
