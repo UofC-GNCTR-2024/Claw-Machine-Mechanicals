@@ -11,10 +11,12 @@ shaft_od = 4;
 shaft_od_to_key = 3.2;
 shaft_length = 8;
 
-pulley_od = 20;
-pulley_h = 12;
+pulley_od = 30;
+pulley_h = 18;
 
-torus_r_min = 4; // can be around half of pulley_h
+my_rope_hole_d = 5;
+
+torus_r_min = 6; // can be around half of pulley_h
 
 $fn = 60;
 
@@ -45,6 +47,10 @@ module idler_pulley() {
 			r_maj=pulley_od/2,
 			r_min=torus_r_min,
 		);
+
+		
+        // Remove my_rope_hole
+        translate([5, 0, pulley_h/2]) ycyl(d=my_rope_hole_d, h=100);
 	}
 
 
