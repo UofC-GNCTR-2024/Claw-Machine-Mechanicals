@@ -25,6 +25,8 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
 6. NEMA17 Bracket Mount
     * [Purchase Link](https://www.aliexpress.com/item/1005004497928051.html) (wth drawing)
     * Distance from bolted plate to center of motor: 30mm
+    * Dist between slots: 30mm
+    * Length of slots: 34mm, minus screw holes
     * Motor screw diameter: M3
     * Slotted screw size: up to M4
 
@@ -41,6 +43,10 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
 4. Mount from Y-Axis linear bearings to the Z-Axis motor (`y_axis_sled.scad`)
 5. Idlers for X-Axis (`x_end_idler.scad`)
 6. Drag Chain (`drag_chain_link.scad`)
+7. X-Axis Motor Mount Raiser (`x_motor_mount_raiser.scad`)
+8. GT2 Belt Coupler (`gt2_belt_coupler.stl`)
+    * Source: [Thingiverse](https://www.thingiverse.com/thing:3421878/files)
+    * Attribution: [Mayavan](https://www.thingiverse.com/mayavan/designs)
 
 
 ## Axis Definitions
