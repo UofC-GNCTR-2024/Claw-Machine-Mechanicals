@@ -7,7 +7,7 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
     * Outside Diameter: 15mm
     * Length: 24mm
     * Similar [Purchase Link](https://www.aliexpress.com/item/1005004774546723.html) with dimensions
-3. 1x 12V Geared DC Motor with Encoder
+3. ~~1x 12V Geared DC Motor with Encoder~~
     * `12V, 280 RPM`
     * [Purchase Link](https://www.aliexpress.com/item/4001314473291.html)
     * OD of Gearbox: 24.6mm
@@ -18,6 +18,11 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
     * Shaft Flat Part, from OD to key: 3.2mm
     * Shaft Length, excluding collar: 8mm
     * Shaft Collar Length: 3mm
+3. 1x 12V Worm-Geared DC Motor with Encoder
+    * `12V, 100 RPM`
+    * [Purchase Link](https://www.amazon.ca/Torque-Turbo-Geared-Gearbox-100RPM/)
+    * M3 threads on case
+    
 4. 3x NEMA 17 Motors
 5. Claw
     * Comes with rope
@@ -47,7 +52,7 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
 8. GT2 Belt Coupler (`gt2_belt_coupler.stl`)
     * Source: [Thingiverse](https://www.thingiverse.com/thing:3421878/files)
     * Attribution: [Mayavan](https://www.thingiverse.com/mayavan/designs)
-
+    * License: [Creative Commons - Attribution](https://creativecommons.org/licenses/by/4.0/) license.
 
 ## Axis Definitions
 1. X-Axis = parallel to the side with two separated motors/linear rails

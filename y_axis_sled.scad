@@ -11,7 +11,7 @@ bearing_l = 25;
 bearing_sep = 4; // distance between bearings
 
 block_w = 60; // in x
-block_l = rail_sep+28; // in y
+block_l = rail_sep+30; // in y
 block_t = 14; // in z
 
 stepper_hole_sep = 31;
@@ -23,6 +23,8 @@ split_size = 3;
 nut_w = 5.5 + 0.5;
 nut_t = 2.4 + 0.3;
 
+nut_w_tight = 5.5-0.1;
+
 screw_d = 3.5;
 
 gearbox_d = 25 - 0.4;
@@ -33,6 +35,7 @@ $fn = 60;
 
 make_y_sled(TOP);
 //make_y_sled(BOTTOM);
+//back(100) make_y_sled(BOTTOM); // for preview
 
 module make_y_sled(top_or_bottom) {
 	difference() {
@@ -64,7 +67,14 @@ module make_y_sled(top_or_bottom) {
 
 		// remove bolts to hold the top and middle parts together
 		for (x = [1,-1,0]) for (y = [1,-1]) for (side = (x==0 ? [1] : [1,-1]))
-		translate([x*20, y*(rail_sep/2 + 11*side), 0]) zcyl(d=screw_d, h=100);
+		translate([x*18, y*(rail_sep/2 + 11*side), 0]) {
+			// screw hole
+			zcyl(d=screw_d, h=100);
+
+			// nut on top side
+			up(block_t/2 - nut_t)
+			zcyl(r=nut_w_tight/sqrt(3), h=20, anchor=BOTTOM, $fn=6);
+		}
 
 		// remove gearbox
 		down(block_t/2 + pulley_od_max/2) xcyl(d=gearbox_d, h=100);
@@ -90,8 +100,24 @@ module make_y_sled(top_or_bottom) {
 
 		// remove top or bottom
 		cuboid([500, 500, 100], anchor=top_or_bottom);
+
+		// remove slit in top to pass belt through
+		up(-0.5) {
+			cuboid(
+				[150, 22, 100],
+				anchor=BOTTOM
+			);
+			// cuboid(
+			// 	[26, 15, 100],
+			// 	anchor=BOTTOM+FRONT
+			// );
+		}
 		
 	}
+
+	// import the belt holder
+	//if (top_or_bottom == TOP)
+	//	up(3.5) fwd(31) import("gt2_belt_coupler.stl");
 
 }
 
