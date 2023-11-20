@@ -53,10 +53,10 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
     * Source: [Thingiverse](https://www.thingiverse.com/thing:3421878/files)
     * Attribution: [Mayavan](https://www.thingiverse.com/mayavan/designs)
     * License: [Creative Commons - Attribution](https://creativecommons.org/licenses/by/4.0/) license.
+9. X Idler Mount (`x_idler_mount.scad`)
+    * Raises the idlers up to the same height as the x-axis steppers
 
 ## Axis Definitions
 1. X-Axis = parallel to the side with two separated motors/linear rails
 2. Y-Axis = perpendicular to the side with two separated motors/linear rails (claw attaches to Y-Axis)
 3. Z-Axis = raise and lower
-
-TODO: add photo of axes
