@@ -23,25 +23,29 @@
 // ------------------------
 number_of_teeth = 20; // [10:100]
 profile = 0; // [1:MXL, 2:40DP, 3:XL, 4:H, 5:T2.5, 6:T5, 7:T10, 8:AT5, 9:HTD_3mm, 10:HTD_5mm, 11:HTD_8mm, 12:GT2_2mm, 13:GT2_3mm, 14:GT2_5mm]
-motor_shaft_diameter = 4; // (in mm)
-toothed_part_length = 10; // [3:30] (in mm)
+motor_shaft_diameter = 6; // (in mm)
+toothed_part_length = 8; // [3:30] (in mm)
 // note that the flanges add additional usable length to the toothed_part_length
 
 // base refers to the part with the screws
-base_height = 8; // [0:30] (in mm)
+base_height = 4; // [0:30] (in mm)
 base_diameter = 20;   // [10:50] (in mm)
 
-my_pulley_d = 18;
+my_pulley_d = 30;
 my_rope_hole_d = 5;
 
 // ---------------------------
 // Idler & retainer parameters
 // ---------------------------
+// retainer_width is on top, idler_width is on bottom
 belt_retainer = 1; // [0:No, 1:Yes]
-retainer_height_p = 8; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
+retainer_height = 8; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
+retainer_width = 4; // in z
+retainer_lip_t = 8;
 belt_idler = 1; // [0:No, 1:Yes]
-// Height of idler flange over pulley. Set to same as base height if you want an idler but no pulley.
-idler_height_p = 8; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
+idler_height = 8; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
+idler_width = 4; // in z
+idler_lip_t = 2.5;
 
 // ---------------
 // Shaft fastening
@@ -73,10 +77,6 @@ additional_tooth_depth = 0; //mm
 // ------------------------------------
 // Calculated parameters (do not alter)
 // ------------------------------------
-idler_height = (belt_idler==0 ? 0 : idler_height_p);
-retainer_height = (belt_retainer==0 ? 0 : retainer_height_p);
-//echo (str("Idler height\t= ",idler_height," mm"));
-//echo (str("Retainer height\t= ",retainer_height," mm"));
 no_of_nuts = screws_disposition;
 nut_angle = no_of_nuts != 3 ? 90 : 120;
 motor_shaft = motor_shaft_diameter + 0.2;
@@ -86,7 +86,8 @@ nut_depths = [1, 1.3, 1.6, 2, 2.4, 3.2, 4.7, 5.2];
 // bolthead size circ.[ none,    M3,    M4,   M5,    M6,    M8,   M10,   M12, custom]
 bolt_head_diameters = [0.000, 6.010, 7.660, 8.79, 11.05, 14.38, 17.77, 20.03,  15.8]; // circle diameter, not width across flats!
 bolt_head_heights =   [0.000, 2.125, 2.925, 3.65,  4.15,  5.45,  6.58,  7.68,   5.5];
-screw_diameter = screw_diameters[screw_profile] + 0.2;
+screw_diameter = 3; // CHANGED BY ME
+screw_head_d = 6.5; // ADDED BY ME
 nut_width = nut_widths[screw_profile] + 0.2;
 nut_depth = nut_depths[screw_profile] + 0.3;
 bolt_head_diam = bolt_head_diameters[idler_bolt_option] + 0.2; // + 0.1-2 for tight fit
@@ -112,7 +113,20 @@ HTD_8mm_pulley_dia = tooth_spacing (8,0.6858);
 GT2_2mm_pulley_dia = tooth_spacing (2,0.254);
 GT2_3mm_pulley_dia = tooth_spacing (3,0.381);
 GT2_5mm_pulley_dia = tooth_spacing (5,0.5715);
+
+///////////////// ADDED BY ME ///////////////////
+// Make the Pulley
+pulley("No Teeth" , my_pulley_d , 1, 1 );
+
+
+
+echo("Overall max diameter (transfer to y_axis_sled):", my_pulley_d + max(retainer_height, idler_height)*2);
+echo("Overall max height (transfer to y_axis_sled):", base_height + idler_width + toothed_part_length + retainer_width + retainer_lip_t);
+//////////////////////////////////////////////// 
+
+
 // The following calls the pulley creation part, and passes the pulley diameter and tooth width to that module
+/*
 if ( profile == 0 ) {pulley("No Teeth" , my_pulley_d , 1, 1 ); }
 if ( profile == 1 ) {pulley("MXL" , MXL_pulley_dia , 0.508 , 1.321 ); }
 if ( profile == 2 ) {pulley("40 D.P." , 40DP_pulley_dia , 0.457 , 1.226 ); }
@@ -128,6 +142,7 @@ if ( profile == 11 ){pulley("HTD 8mm" , HTD_8mm_pulley_dia , 3.607 , 6.603 ); }
 if ( profile == 12 ){pulley("GT2 2mm" , GT2_2mm_pulley_dia , 0.764 , 1.494 ); }
 if ( profile == 13 ){pulley("GT2 3mm" , GT2_3mm_pulley_dia , 1.169 , 2.31 ); }
 if ( profile == 14 ){pulley("GT2 5mm" , GT2_5mm_pulley_dia , 1.969 , 3.952 ); }
+*/
 
 // ---------
 // Functions
@@ -148,16 +163,16 @@ module pulley( belt_type , pulley_OD , tooth_depth , tooth_width ){
   tooth_depth_scale = ((tooth_depth + additional_tooth_depth ) / tooth_depth) ;
 
 
-//  translate ([0,0, base_height + toothed_part_length + retainer_height + idler_height]){
+//  translate ([0,0, base_height + toothed_part_length + retainer_width + idler_width]){
 //    rotate ([0,180,0]){
       difference(){   
-        translate([0,0,idler_height]){
+        translate([0,0,idler_width]){
           union(){
             //base
             if (( base_height < 2 ) && (no_of_nuts > 0)){ 
               echo ("CAN'T DRAW PULLEY BASE, HEIGHT LESS THAN 2!!!"); 
             } else {
-              translate([0,0,-idler_height]){
+              translate([0,0,-idler_width]){
                 //rotate_extrude($fn=base_diameter*2)
                 rotate_extrude($fn=base_diameter*10){
                   //square([base_diameter/2-1,base_height]);
@@ -209,17 +224,31 @@ module pulley( belt_type , pulley_OD , tooth_depth , tooth_width ){
               translate ([0,0, base_height + toothed_part_length ]){
                 //rotate_extrude($fn=number_of_teeth*4){  
                 rotate_extrude($fn=number_of_teeth*20){
-                  polygon([[0,0],[pulley_OD/2,0],[pulley_OD/2 + retainer_height , retainer_height],[0 , retainer_height],[0,0]]);
+                  polygon([
+                    [0,0],
+                    [pulley_OD/2,0],
+                    [pulley_OD/2 + retainer_height, retainer_width],
+                    [pulley_OD/2 + retainer_height, retainer_width + retainer_lip_t], // ADDED BY ME
+                    [0, retainer_width + retainer_lip_t], // ADDED BY ME
+                    [0,0]
+                  ]);
                 }
               }
             }
             
-            //if ( belt_idler < 0 ) {translate ([0,0, base_height - idler_height ]) 
+            //if ( belt_idler < 0 ) {translate ([0,0, base_height - idler_width ]) 
             if ( belt_idler == 1 ){
-              translate ([0,0, base_height - idler_height ]){
+              translate ([0,0, base_height - idler_width ]){
                 //rotate_extrude($fn=number_of_teeth*4){
                 rotate_extrude($fn=number_of_teeth*20){
-                  polygon([[0,0],[pulley_OD/2 + idler_height,0],[pulley_OD/2 , idler_height],[0 , idler_height],[0,0]]);
+                  polygon([ // x is radius, y is Z
+                    [0,0],
+                    [pulley_OD/2 + idler_height, -idler_lip_t], // ADDED BY ME
+                    [pulley_OD/2 + idler_height, 0],
+                    [pulley_OD/2, idler_width],
+                    [0, idler_width],
+                    [0,0]
+                  ]);
                 }
               }
             }
@@ -227,23 +256,23 @@ module pulley( belt_type , pulley_OD , tooth_depth , tooth_width ){
         } // end of translation before union
        
         //hole for motor shaft
-        //translate([0,0,-1])cylinder(r=motor_shaft/2,h=base_height + toothed_part_length + retainer_height + 2,$fn=motor_shaft*4);
+        //translate([0,0,-1])cylinder(r=motor_shaft/2,h=base_height + toothed_part_length + retainer_width + 2,$fn=motor_shaft*4);
         translate([0,0,-1]){
-          //cylinder(r=motor_shaft/2,h=base_height + toothed_part_length + retainer_height + 2,$fn=motor_shaft*20);
-          cylinder(r=motor_shaft/2,h=base_height + idler_height + toothed_part_length + retainer_height + 2,$fn=motor_shaft*20);
+          //cylinder(r=motor_shaft/2,h=base_height + toothed_part_length + retainer_width + 2,$fn=motor_shaft*20);
+          cylinder(r=motor_shaft/2,h=base_height + idler_width + toothed_part_length + retainer_width + retainer_lip_t + 2,$fn=motor_shaft*20);
         }
               
         //captive nut and grub screw holes
-        if ( base_height < nut_width ){
+        if ( false && base_height < nut_width ){ // CHANGED BY ME (disabled check)
           echo ("CAN'T DRAW CAPTIVE NUTS, HEIGHT LESS THAN NUT DIAMETER!!!");
         } else {
-          if ( (base_diameter - motor_shaft)/2 < nut_depth + 3 ) { 
+          if ( false && (base_diameter - motor_shaft)/2 < nut_depth + 3 ) { // CHANGED BY ME (disabled check)
             echo ("CAN'T DRAW CAPTIVE NUTS, DIAMETER TOO SMALL FOR NUT DEPTH!!!");
           } else {
             // Iterate over nuts amount
             if (no_of_nuts > 0){
               for(j=[1:no_of_nuts]){
-                rotate([0,0,j*nut_angle]){
+                union(){ // CHANGED BY ME: removed the stupid rotate here
                   translate([0,0,nut_elevation])rotate([90,0,0]){
                     union(){
                       //entrance
@@ -257,9 +286,14 @@ module pulley( belt_type , pulley_OD , tooth_depth , tooth_width ){
                         translate([0,0.25,motor_shaft/2+nut_depth/2+nut_shaft_distance]) cube([nut_width,nut_width,nut_depth],center=true);
                       }
 
-                      //grub screw hole
-                      //rotate([0,0,22.5])cylinder(r=screw_diameter/2,h=base_diameter/2+1,$fn=8);
-                      rotate([0,0,22.5])cylinder(r=screw_diameter/2,h=base_diameter/2+1,$fn=60);
+                      //grub screw hole and screw head
+                      rotate([0,0,0]) {
+                        // main screw
+                        cylinder(r=screw_diameter/2,h=base_diameter/2+100,$fn=60);
+
+                        // screw head
+                        translate([0,0,10]) rotate([8,0,0]) cylinder(d=screw_head_d, h=100, $fn=60);
+                      }
                     }
                   }
                 }
@@ -269,16 +303,14 @@ module pulley( belt_type , pulley_OD , tooth_depth , tooth_width ){
         }
         // Revove hexagon
         if (bolt_head_diam > 0){
-          translate([0,0,base_height + toothed_part_length + retainer_height + idler_height - bolt_head_height]){
+          translate([0,0,base_height + toothed_part_length + retainer_width + idler_width - bolt_head_height]){
             cylinder(d=bolt_head_diam,h=bolt_head_height+0.1,$fn=6);
           }
         }
 
         // Remove my_rope_hole
-        translate([5, 0, 20]) rotate([90,0,0]) cylinder(d=my_rope_hole_d, h=100, center=true, $fn=60);
+        translate([10, 0, 10]) rotate([90,0,0]) cylinder(d=my_rope_hole_d, h=100, center=true, $fn=60);
       }
-//    }
-//  }
 }
 
 // Tooth profile modules

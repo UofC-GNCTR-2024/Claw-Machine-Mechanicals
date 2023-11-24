@@ -15,7 +15,6 @@ block_l = rail_sep+30; // in y
 block_t = 14; // in z
 
 stepper_hole_sep = 31;
-stepper_shaft_clearance_d = 22+5;
 stepper_hole_d = 3.5;
 
 split_size = 3;
@@ -37,20 +36,23 @@ gearbox_dist_top_bolts_to_shaft = 9;
 gearbox_len_a = 32;
 gearbox_len_b = 46;
 gearbox_h = 23.5;
-gearbox_shaft_hole_d = 10;
+gearbox_shaft_hole_d = 10; // from pulley base_diameter
 gearbox_plate_t_in_y = 2.5;
 gearbox_plate_t_in_x = 3.5;
 bot_plate_t = 3;
 
 pulley_od_max = 50;
-pulley_len = 20;
+pulley_len = 22; // height with no retainer_lip is 22
 
-pulley_support_bolt_d = 6.1;
-pulley_support_nut_w = 10+0.5;
+// for M6 bolt/nut
+//pulley_support_bolt_d = 6.1;
+//pulley_support_nut_w = 10+0.5;
+pulley_support_bolt_d = 46+0.5;
+pulley_support_nut_w = 1; //unused
 
 cord_d = 6;
 cord_torus_d_min = 5;
-
+cord_torus_offset = 10; // diameter of main part of pulley, divided by 2
 
 gearbox_block_l = pulley_od_max + gearbox_plate_t_in_y*2;
 gearbox_block_h = max(
@@ -124,7 +126,7 @@ module make_y_sled(top_or_bottom) {
 			xcyl(d=gearbox_shaft_hole_d, h=100, anchor=LEFT);
 
 			// support bolt hole (M6) out -X
-			xcyl(d=pulley_support_bolt_d, h=100, anchor=RIGHT);
+			xcyl(d=pulley_support_bolt_d, h=100, anchor=RIGHT, $fn=(pulley_support_bolt_d>20?150:20));
 
 			// support bolt nut (M6) out -X
 			xcyl(
@@ -152,8 +154,9 @@ module make_y_sled(top_or_bottom) {
 		);
 
 		// remove limit switch mounting holes
+		for (rot = [0,90]) zrot(rot)
 		down(block_t/2 + gearbox_block_h - 5)
-		ycopies(spacing = 10, n = 6) {
+		ycopies(spacing = 10, n = (rot==0 ? 6 : 2)) {
 			// screw hole
 			xcyl(d=limit_screw_d, h=100, anchor=CENTER, $fn=20);
 		}
@@ -204,6 +207,7 @@ module make_y_sled(top_or_bottom) {
 	if (top_or_bottom == BOTTOM) {
 		difference() {
 			intersection() {
+				fwd (cord_torus_offset)
 				union() {
 					
 					// make the X
@@ -232,11 +236,13 @@ module make_y_sled(top_or_bottom) {
 			}
 
 			// remove hole for cord
+			fwd (cord_torus_offset)
 			zcyl(d=cord_d + cord_torus_d_min, h=200);
 		}
 
 		
 		// make the torus for the cord
+		fwd (cord_torus_offset)
 		down(block_t/2 + gearbox_block_h - bot_plate_t/2)
 		torus(
 			d_min = cord_torus_d_min,
