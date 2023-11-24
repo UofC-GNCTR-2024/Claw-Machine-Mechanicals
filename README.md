@@ -22,6 +22,11 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
     * `12V, 100 RPM`
     * [Purchase Link](https://www.amazon.ca/Torque-Turbo-Geared-Gearbox-100RPM/)
     * M3 threads on case
+        * 18mm x 33mm pattern
+    * Main Gearbox Dimensions: 32mm x 46mm x 23.5mm tall
+    * Shaft OD: 6mm
+    * Motor OD: 24mm (offset from gearbox height center)
+    * Dist from Top Screws to Shaft (approx): 9mm
     
 4. 3x NEMA 17 Motors
 5. Claw
