@@ -41,9 +41,6 @@ gearbox_plate_t_in_y_pretend = 5;
 gearbox_plate_t_in_x = 3.5;
 bot_plate_t = 3;
 
-gearbox_block_l = 60;
-gearbox_block_shift_fwd = 2;
-
 pulley_od_max = 50;
 pulley_len = 20;
 
@@ -52,6 +49,18 @@ pulley_support_nut_w = 10+0.5;
 
 cord_d = 6;
 cord_torus_d_min = 5;
+
+
+gearbox_block_l = 60;
+gearbox_block_h = max(
+					pulley_od_max,
+					pulley_od_max/2 + gearbox_len_b - gearbox_dist_top_bolts_to_shaft
+				) + bot_plate_t;
+
+
+limit_screw_d = 1.9; // M2 thread-forming
+limit_screw_l = 8;
+limit_screw_sep = 10;
 
 $fn = 60;
 
@@ -71,11 +80,11 @@ module make_y_sled(top_or_bottom) {
 			);
 
 			// add on holder for gearbox
-			down(block_t/2) fwd(gearbox_block_shift_fwd) cuboid(
+			down(block_t/2) cuboid(
 				[
 					pulley_len + 2*gearbox_plate_t_in_x,
 					gearbox_block_l,
-					pulley_od_max + bot_plate_t // /2 + gearbox_len_a/2 + 5
+					gearbox_block_h
 				],
 				anchor=TOP,
 				rounding=3, except=[TOP]
@@ -86,8 +95,8 @@ module make_y_sled(top_or_bottom) {
 		// remove gearbox screw holes
 		down(block_t/2 + pulley_od_max/2)
 		for (y=[1,-1]) for (z=[1,-1])
-		down(z*gearbox_bolt_sep_a/2)
-		fwd(gearbox_dist_top_bolts_to_shaft + y*gearbox_bolt_sep_b/2) {
+		fwd(z*gearbox_bolt_sep_a/2)
+		down(gearbox_dist_top_bolts_to_shaft + y*gearbox_bolt_sep_b/2) {
 			// motor side
 			xcyl(d=gearbox_bolt_d, h=100, anchor=LEFT);
 
@@ -124,11 +133,17 @@ module make_y_sled(top_or_bottom) {
 
 		// remove where pulley goes (as a box, all the way through)
 		if (top_or_bottom == BOTTOM)
-		for (y = [0, gearbox_block_shift_fwd+2]) fwd(y)
 		cuboid(
 			[pulley_len, pulley_od_max, 400],
 			anchor=CENTER
 		);
+
+		// remove limit switch mounting holes
+		down(block_t/2 + gearbox_block_h - 5)
+		ycopies(spacing = 10, n = 6) {
+			// screw hole
+			xcyl(d=limit_screw_d, h=100, anchor=CENTER, $fn=20);
+		}
 
 		// remove Y-Axis rails
 		for(y = [1,-1]) fwd(y*rail_sep/2) {
@@ -175,24 +190,24 @@ module make_y_sled(top_or_bottom) {
 				union() {
 					
 					// make the X
-					down(block_t/2 + pulley_od_max)
+					down(block_t/2 + gearbox_block_h)
 					for (x = [1, -1]) for (y = [1, -1])
 					hull() {
 						// center one
-						zcyl(d=12, h=bot_plate_t, anchor=TOP);
+						zcyl(d=12, h=bot_plate_t, anchor=BOTTOM);
 
 						// out ones
 						translate([x*20, y*30])
-						zcyl(d=6, h=bot_plate_t, anchor=TOP, $fn=8);
+						zcyl(d=6, h=bot_plate_t, anchor=BOTTOM, $fn=8);
 					}
 				}
 
 				// intersect with gearbox block
-				down(block_t/2) fwd(gearbox_block_shift_fwd) cuboid(
+				down(block_t/2) cuboid(
 					[
 						pulley_len + 2*gearbox_plate_t_in_x,
 						gearbox_block_l,
-						pulley_od_max + bot_plate_t // /2 + gearbox_len_a/2 + 5
+						gearbox_block_h
 					],
 					anchor=TOP,
 					rounding=3, except=[TOP]
@@ -205,7 +220,7 @@ module make_y_sled(top_or_bottom) {
 
 		
 		// make the torus for the cord
-		down(block_t/2 + pulley_od_max + bot_plate_t/2)
+		down(block_t/2 + gearbox_block_h - bot_plate_t/2)
 		torus(
 			d_min = cord_torus_d_min,
 			id = cord_d - 0.5
