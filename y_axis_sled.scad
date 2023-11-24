@@ -26,6 +26,7 @@ nut_t = 2.4 + 0.3;
 nut_w_tight = 5.5-0.1;
 
 screw_d = 3.5;
+screw_head_d = 6;
 
 gearbox_bolt_d = 3.2;
 gearbox_bolt_meat = 2; // meat of wall to pass through
@@ -37,7 +38,7 @@ gearbox_len_a = 32;
 gearbox_len_b = 46;
 gearbox_h = 23.5;
 gearbox_shaft_hole_d = 10;
-gearbox_plate_t_in_y_pretend = 5;
+gearbox_plate_t_in_y = 2.5;
 gearbox_plate_t_in_x = 3.5;
 bot_plate_t = 3;
 
@@ -51,7 +52,7 @@ cord_d = 6;
 cord_torus_d_min = 5;
 
 
-gearbox_block_l = 60;
+gearbox_block_l = pulley_od_max + gearbox_plate_t_in_y*2;
 gearbox_block_h = max(
 					pulley_od_max,
 					pulley_od_max/2 + gearbox_len_b - gearbox_dist_top_bolts_to_shaft
@@ -79,12 +80,24 @@ module make_y_sled(top_or_bottom) {
 				rounding=3, except=[TOP,BOTTOM]
 			);
 
-			// add on holder for gearbox
+			// add on holder block for gearbox
 			down(block_t/2) cuboid(
 				[
 					pulley_len + 2*gearbox_plate_t_in_x,
 					gearbox_block_l,
 					gearbox_block_h
+				],
+				anchor=TOP,
+				rounding=3, except=[TOP]
+			);
+
+			// add on support on bottom side for around the linear bearings
+			down(block_t/2)
+			cuboid(
+				[
+					pulley_len + 2*gearbox_plate_t_in_x + 2*3,
+					rail_sep + 2*7,
+					6
 				],
 				anchor=TOP,
 				rounding=3, except=[TOP]
@@ -160,6 +173,10 @@ module make_y_sled(top_or_bottom) {
 		translate([x*18, y*(rail_sep/2 + 11*side), 0]) {
 			// screw hole
 			zcyl(d=screw_d, h=100);
+
+			// screw head on bottom side (in theory not used at all)
+			down(block_t/2 - 1)
+			zcyl(d=screw_head_d, h=100, anchor=TOP);
 
 			// nut on top side
 			up(block_t/2 - nut_t)
