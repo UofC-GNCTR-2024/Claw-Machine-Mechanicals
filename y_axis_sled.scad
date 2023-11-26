@@ -67,11 +67,11 @@ limit_screw_sep = 10;
 
 $fn = 60;
 
-//make_y_sled(TOP);
+make_y_sled(TOP);
 //back(100) make_y_sled(BOTTOM); // for preview
 
-make_y_sled(BOTTOM);
-back(100) make_y_sled(TOP); // for preview
+//make_y_sled(BOTTOM);
+//back(100) make_y_sled(TOP); // for preview
 
 module make_y_sled(top_or_bottom) {
 	difference() {
@@ -104,7 +104,6 @@ module make_y_sled(top_or_bottom) {
 				anchor=TOP,
 				rounding=3, except=[TOP]
 			);
-
 		}
 
 		// remove gearbox screw holes
@@ -189,16 +188,24 @@ module make_y_sled(top_or_bottom) {
 		// remove top or bottom
 		cuboid([500, 500, 100], anchor=top_or_bottom);
 
-		// remove slit in top to pass belt through
-		up(-0.5) {
-			cuboid(
-				[150, 22, 100],
-				anchor=BOTTOM
-			);
-			// cuboid(
-			// 	[26, 15, 100],
-			// 	anchor=BOTTOM+FRONT
-			// );
+		// remove place to screw in the belt
+		for (a = [-2,-1,0,1,2]) {
+			translate([a * 7, (a%2 == 0 ? 1 : -1) * a - 10, 0]) {
+				// bolt
+				zcyl(
+					d=screw_d,
+					h=100,
+					anchor=BOTTOM
+				);
+				
+				// nut
+				zcyl(
+					r=nut_w_tight/sqrt(3),
+					h=nut_t,
+					anchor=BOTTOM,
+					$fn=6
+				);
+			}
 		}
 		
 	}
