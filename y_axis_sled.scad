@@ -52,7 +52,7 @@ pulley_support_nut_w = 1; //unused
 
 cord_d = 6;
 cord_torus_d_min = 5;
-cord_torus_offset = 10; // diameter of main part of pulley, divided by 2
+cord_torus_offset = 12; // diameter of main part of pulley, divided by 2, plus a bit to get it close to a limit switch
 
 gearbox_block_l = pulley_od_max + gearbox_plate_t_in_y*2;
 gearbox_block_h = max(
@@ -71,7 +71,7 @@ $fn = 60;
 //back(100) make_y_sled(BOTTOM); // for preview
 
 make_y_sled(BOTTOM);
-//back(100) make_y_sled(TOP); // for preview
+back(100) make_y_sled(TOP); // for preview
 
 module make_y_sled(top_or_bottom) {
 	difference() {
@@ -109,9 +109,9 @@ module make_y_sled(top_or_bottom) {
 
 		// remove gearbox screw holes
 		down(block_t/2 + pulley_od_max/2)
-		for (y=[1,-1]) for (z=[1,-1])
+		for (y=[1,0]) for (z=[1,-1])
 		fwd(z*gearbox_bolt_sep_a/2)
-		down(gearbox_dist_top_bolts_to_shaft + y*gearbox_bolt_sep_b/2) {
+		down(-gearbox_dist_top_bolts_to_shaft + y*gearbox_bolt_sep_b) {
 			// motor side
 			xcyl(d=gearbox_bolt_d, h=100, anchor=LEFT);
 
@@ -129,12 +129,12 @@ module make_y_sled(top_or_bottom) {
 			xcyl(d=pulley_support_bolt_d, h=100, anchor=RIGHT, $fn=(pulley_support_bolt_d>20?150:20));
 
 			// support bolt nut (M6) out -X
-			xcyl(
-				r=pulley_support_nut_w/sqrt(3),
-				h=pulley_len/2 + 2.3,
-				$fn=6,
-				anchor=RIGHT
-			);
+			// xcyl(
+			// 	r=pulley_support_nut_w/sqrt(3),
+			// 	h=pulley_len/2 + 2.3,
+			// 	$fn=6,
+			// 	anchor=RIGHT
+			// );
 		}
 
 		// remove where pulley goes (as a cyl)
