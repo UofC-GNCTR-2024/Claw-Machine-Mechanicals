@@ -35,7 +35,6 @@ module x_end_with_limit_switch() {
 				anchor=TOP,
 				rounding=2, except=[BOTTOM, TOP],
 			);
-
 		}
 
 		// remove smooth rod

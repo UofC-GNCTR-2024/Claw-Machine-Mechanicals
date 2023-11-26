@@ -5,6 +5,8 @@ hole_d = 4.2;
 hole_sep = 30;
 outside_size = 50;
 
+// FIXME: if we re-print, lower the motor to straddle the rails
+
 $fn = 80;
 
 make_x_motor_mount_raiser();

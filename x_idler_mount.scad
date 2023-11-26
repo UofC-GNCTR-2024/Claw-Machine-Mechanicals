@@ -1,5 +1,7 @@
 include <BOSL2/std.scad>
 
+// FIXME: if we re-print, lower the motor and idler to straddle the rails
+
 // dist from plywood to center of pulley (motor raiser thickness + mount dist)
 pulley_h = 12 + 30;
 
@@ -82,7 +84,5 @@ module make_x_idler_mount() {
 				anchor=BOTTOM, $fn=6
 			);
 		}
-
 	}
-  
 }
