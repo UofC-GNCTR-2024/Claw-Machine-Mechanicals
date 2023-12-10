@@ -58,13 +58,13 @@ pcbThickness        = 1.6;
                             
 //-- padding between pcb and inside wall
 
-paddingFront        = 2;
-paddingBack         = 2;
-paddingRight        = 2;
-paddingLeft         = 2;
+paddingFront        = 5;
+paddingBack         = 10;
+paddingRight        = 10;
+paddingLeft         = 5;
 
 //-- Edit these parameters for your own box dimensions
-wallThickness       = 2.0;
+wallThickness       = 2.6;
 basePlaneThickness  = 1.5;
 lidPlaneThickness   = 1.5;
 
@@ -88,7 +88,7 @@ roundRadius         = 3.0;
 standoffHeight      = 5;  //-- used for PCB Supports, Push Button and showPCB
 standoffDiameter    = 8;
 standoffPinDiameter = 2.7; // 2.7mm for M3 thread-forming screws
-standoffHoleSlack   = 0.4;
+standoffHoleSlack   = 0; // orig: 0.4 (added to the PCB mounting hole diameter)
 
 //-- C O N T R O L ---------------//-> Default -----------------------------
 showSideBySide        = true;     //-> true
@@ -208,10 +208,16 @@ pcbStands =
 //-------------------------------------------------------------------
 connectors   =
 [
-//    [9, 15, 10, 2.5, 6 + 1.25, 4.0, 9, 4, yappFrontRight]
-//   ,[9, 15, 10, 2.5, 6 + 1.25, 4.0, 9, yappNoFillet, yappFrontLeft]
-//   ,[34, 15, 10, 2.5, 6+ 1.25, 4.0, 9, yappFrontRight]
-//   ,[34, 15, 10, 2.5, 6+ 1.25, 4.0, 9, 0, yappFrontLeft]
+  // Create standoffs for the PCB (not used)
+  // [
+  //   30.48 - 24.765, // posx (front-back dist) [Y on PCB]
+  //   55.88 - 50.8, // posy (side-to-side dist) [X on PCB]
+  //   standoffHeight,
+  //   2.7, // screwDiameter
+  //   6 + 1.25, // screwHeadDiameter (random guess)
+  //   4.0, // insertDiameter
+  //   8, // outsideDiameter
+  // ]
 ];
 
 
@@ -258,7 +264,26 @@ connectors   =
 //-------------------------------------------------------------------
 cutoutsBase = 
 [
-  [65,shellWidth/2 ,55,55, 5, yappPolygon ,0 ,30, yappCenter, shapeHexagon, maskHexCircles]
+  // polygon vents
+  // [65,shellWidth/2 ,55,55, 5, yappPolygon ,0 ,30, yappCenter, shapeHexagon, maskHexCircles],
+
+  // wires passthrough
+  [
+    0,
+    pcbLength/2,
+    25,
+    25,
+    12.5,
+    yappCircle,
+  ],
+
+  // screw holes
+  [-8, 0, 3.2, 3.2, 3.2, yappCircle],
+  [-8, pcbWidth, 3.2, 3.2, 3.2, yappCircle],
+
+  // TODO: fix these holes
+  // TODO: add USB programming hole
+
 // , [0, 0, 10, 10, 0, yappRectangle,maskHexCircles]
 // , [shellLength*2/3,shellWidth/2 ,0, 30, 20, yappCircleWithFlats, yappCenter]
 // , [shellLength/2,shellWidth/2 ,10, 5, 20, yappCircleWithKey,yappCenter]
@@ -266,18 +291,7 @@ cutoutsBase =
 
 cutoutsLid  = 
 [
-//Center test
-  [shellLength/2,   shellWidth/2,  1,  1,  5, yappRectangle ,20 ,45, yappCenter]
- ,[pcbLength/2,       pcbWidth/2,  1,  1,  5, yappRectangle ,20 ,45, yappCenter, yappCoordPCB]
-//Edge tests
- ,[shellLength/2,              0,  2,  2,  5, yappRectangle ,20 ,45, yappCenter]
- ,[shellLength/2,     shellWidth,  2,  2,  5, yappRectangle ,20 ,45, yappCenter]
- ,[0,               shellWidth/2,  2,  2,  5, yappRectangle ,20 ,45, yappCenter]
- ,[shellLength,     shellWidth/2,  2,  2,  5, yappRectangle ,20 ,45, yappCenter]
-
- ,[shellLength*2/3, shellWidth/2,  0, 30, 20, yappCircleWithFlats, yappCenter]
- ,[shellLength/3,   shellWidth/2, 10,  5, 20, yappCircleWithKey,yappCenter]
-
+  
 ];
 
 cutoutsFront =  
@@ -291,6 +305,14 @@ cutoutsBack =
 
 cutoutsLeft =   
 [
+  [
+    pcbLength/2,
+    0,
+    15, // width
+    10, // height
+    2, // radius
+    yappRoundedRect
+  ]
 ];
 
 cutoutsRight =  
@@ -368,25 +390,25 @@ baseMounts =
 //-------------------------------------------------------------------
 lightTubes =
 [
-  [(pcbLength/2)+10, 20,    // [0,1] Pos
-    5, 5,                   // [2,3] Length, Width
-    1,                      // [4]   wall thickness
-    standoffHeight + pcbThickness + 4, // [5] Gap above base bottom
-    yappRectangle,          // [6]   tubeType (Shape)
-    0.5,                    // [7]   lensThickness
-    yappCoordPCB            // [n1]
-  ]
-  ,
-  [(pcbLength/2)+10, 40,    // [0,1] Pos
-    5, 10,                  // [2,3] Length, Width
-    1,                      // [4]   wall thickness
-    standoffHeight + pcbThickness + 4, // [5] Gap above base bottom
-    yappCircle,             // [6]   tubeType (Shape)
-    undef,                  // [7]
-    undef,                  // [8]
-    5,                      // [9]   filletRadius
-    yappCoordPCB            // [n1]
-  ]
+  // [(pcbLength/2)+10, 20,    // [0,1] Pos
+  //   5, 5,                   // [2,3] Length, Width
+  //   1,                      // [4]   wall thickness
+  //   standoffHeight + pcbThickness + 4, // [5] Gap above base bottom
+  //   yappRectangle,          // [6]   tubeType (Shape)
+  //   0.5,                    // [7]   lensThickness
+  //   yappCoordPCB            // [n1]
+  // ]
+  // ,
+  // [(pcbLength/2)+10, 40,    // [0,1] Pos
+  //   5, 10,                  // [2,3] Length, Width
+  //   1,                      // [4]   wall thickness
+  //   standoffHeight + pcbThickness + 4, // [5] Gap above base bottom
+  //   yappCircle,             // [6]   tubeType (Shape)
+  //   undef,                  // [7]
+  //   undef,                  // [8]
+  //   5,                      // [9]   filletRadius
+  //   yappCoordPCB            // [n1]
+  // ]
 ];
 
 //===================================================================
@@ -412,8 +434,8 @@ lightTubes =
 pushButtons = 
 [
 //-               0,   1,  2,  3, 4, 5,   6, 7
-   [(pcbLength/2)+10, 65, 15, 10, 2, 3  , 1, 4]
-  ,[(pcbLength/2)+10, 85, 10, 10, 0, 2.0, 1, 4, standoffHeight, yappCircle]
+  //  [(pcbLength/2)+10, 65, 15, 10, 2, 3  , 1, 4]
+  // ,[(pcbLength/2)+10, 85, 10, 10, 0, 2.0, 1, 4, standoffHeight, yappCircle]
 ];
              
 //===================================================================
@@ -433,7 +455,8 @@ pushButtons =
 //-------------------------------------------------------------------
 labelsPlane =
 [
-    [5, 5, 0, 1, yappLid, "Liberation Mono:style=bold", 5, "YAPP" ]
+    [20, 10, 0, 1, yappLid, "Liberation Mono:style=bold", 5, "GNCTR 2024 Claw Machine" ],
+    [50, 20, 0, 1, yappLid, "Liberation Mono:style=bold", 5, "\"Bogg Story\"" ]
 ];
 
 
