@@ -15,7 +15,7 @@
 //
 //-----------------------------------------------------------------------
 
-include <../YAPP_Box/library/YAPPgenerator_v30.scad>
+include <library/YAPPgenerator_v30.scad>
 
 //---------------------------------------------------------
 // This design is parameterized based on the size of a PCB.
@@ -52,11 +52,12 @@ printLidShell         = true;
 printSwitchExtenders  = true;
 
 //-- pcb dimensions -- very important!!!
-pcbLength           = 150; // Front to back
-pcbWidth            = 100; // Side to side
+pcbLength           = 158.115 - 24.765; // Front to back (Y on PCB), X on box
+pcbWidth            = 213.36 - 50.8; // Side to side (X on PCB), Y on box
 pcbThickness        = 1.6;
                             
 //-- padding between pcb and inside wall
+
 paddingFront        = 2;
 paddingBack         = 2;
 paddingRight        = 2;
@@ -73,8 +74,8 @@ lidPlaneThickness   = 1.5;
 //                       + basePlaneThickness
 //-- space between pcb and lidPlane :=
 //--      (bottonWallHeight+lidWallHeight) - (standoffHeight+pcbThickness)
-baseWallHeight      = 25;
-lidWallHeight       = 23;
+baseWallHeight      = 25 + 5; // +standoffHeight
+lidWallHeight       = 8;
 
 //-- ridge where base and lid off box can overlap
 //-- Make sure this isn't less than lidWallHeight
@@ -84,9 +85,9 @@ roundRadius         = 3.0;
 
 //-- How much the PCB needs to be raised from the base
 //-- to leave room for solderings and whatnot
-standoffHeight      = 10.0;  //-- used for PCB Supports, Push Button and showPCB
-standoffDiameter    = 7;
-standoffPinDiameter = 2.4;
+standoffHeight      = 5;  //-- used for PCB Supports, Push Button and showPCB
+standoffDiameter    = 8;
+standoffPinDiameter = 2.7; // 2.7mm for M3 thread-forming screws
 standoffHoleSlack   = 0.4;
 
 //-- C O N T R O L ---------------//-> Default -----------------------------
@@ -169,11 +170,17 @@ inspectZfromTop       = false;    //-> View from the inspection cut down
 //-------------------------------------------------------------------
 pcbStands = 
 [
-//- Add stands 5mm from each corner of the PCB
-    [5, 5]
-//-   Add posts 25mm from the corners of the box, with a custon height,diameter, Pin Size, hole
-//-   slack and filler radius.
-//  [25, 25, 10, 10, 3.3, 0.9, 5, yappCoordBox] 
+  // Example:
+  //- Add stands 5mm from each corner of the PCB
+  //    [5, 5]
+
+  // Create standoffs for the PCB
+  [
+    30.48 - 24.765, // posx (front-back dist) [Y on PCB]
+    55.88 - 50.8, // posy (side-to-side dist) [X on PCB]
+    yappBaseOnly,
+    yappHole
+  ]
 ];
 
 
