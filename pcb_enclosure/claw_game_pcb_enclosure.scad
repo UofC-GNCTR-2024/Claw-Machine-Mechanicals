@@ -47,9 +47,9 @@ include <library/YAPPgenerator_v30.scad>
 
 
 //-- which part(s) do you want to print?
-printBaseShell        = true;
+printBaseShell        = false;
 printLidShell         = true;
-printSwitchExtenders  = true;
+printSwitchExtenders  = false;
 
 //-- pcb dimensions -- very important!!!
 pcbLength           = 158.115 - 24.765; // Front to back (Y on PCB), X on box
@@ -58,7 +58,7 @@ pcbThickness        = 1.6;
                             
 //-- padding between pcb and inside wall
 
-paddingFront        = 5;
+paddingFront        = 8;
 paddingBack         = 10;
 paddingRight        = 10;
 paddingLeft         = 5;
@@ -85,7 +85,7 @@ roundRadius         = 3.0;
 
 //-- How much the PCB needs to be raised from the base
 //-- to leave room for solderings and whatnot
-standoffHeight      = 5;  //-- used for PCB Supports, Push Button and showPCB
+standoffHeight      = 7;  //-- used for PCB Supports, Push Button and showPCB
 standoffDiameter    = 8;
 standoffPinDiameter = 2.7; // 2.7mm for M3 thread-forming screws
 standoffHoleSlack   = 0; // orig: 0.4 (added to the PCB mounting hole diameter)
@@ -259,7 +259,7 @@ connectors   =
 //                            offsets applied. This can be used to fine tune the mask 
 //                            placement within the opening.
 //    n(d) = { <yappCoordPCB> | yappCoordBox | yappCoordBoxInside }
-//    n(e) = { <yappOrigin>, yappCenter }
+//    n(e) = { <yappOrigin>, yappCenter } // yappCenter means it positions the center of the cutout/circle
 //    n(f) = { yappLeftOrigin, <yappGlobalOrigin> } // Only affects Top(lid), Back and Right Faces
 //-------------------------------------------------------------------
 cutoutsBase = 
@@ -270,19 +270,39 @@ cutoutsBase =
   // wires passthrough
   [
     0,
-    pcbLength/2,
+    pcbLength*0.75,
     25,
     25,
-    12.5,
+    25/2,
     yappCircle,
   ],
 
-  // screw holes
-  [-8, 0, 3.2, 3.2, 3.2, yappCircle],
-  [-8, pcbWidth, 3.2, 3.2, 3.2, yappCircle],
+  // screw holes (back edge)
+  [-5, 0, 0, 0, 3.2/2, yappCircle, yappCenter],
+  [-5, pcbWidth, 0, 0, 3.2/2, yappCircle, yappCenter],
+  [-5, pcbWidth/2, 0, 0, 3.2/2, yappCircle, yappCenter],
 
-  // TODO: fix these holes
-  // TODO: add USB programming hole
+  // screw holes (right edge)
+  [10, pcbWidth + 5, 0, 0, 3.2/2, yappCircle, yappCenter],
+  [28, pcbWidth + 5, 0, 0, 3.2/2, yappCircle, yappCenter],
+  [pcbLength/2, pcbWidth + 5, 0, 0, 3.2/2, yappCircle, yappCenter],
+  [pcbLength*0.8, pcbWidth + 5, 0, 0, 3.2/2, yappCircle, yappCenter],
+  [pcbLength, pcbWidth + 5, 0, 0, 3.2/2, yappCircle, yappCenter],
+
+  // screw holes (left edge)
+  [pcbLength*0.2, 10, 0, 0, 3.2/2, yappCircle, yappCenter],
+  [pcbLength*0.5, 10, 0, 0, 3.2/2, yappCircle, yappCenter],
+  [pcbLength*0.8, 10, 0, 0, 3.2/2, yappCircle, yappCenter],
+
+  // screw holes (middle)
+  [pcbLength*0.3, pcbWidth/2, 0, 0, 3.2/2, yappCircle, yappCenter],
+  [pcbLength*0.5, pcbWidth/2, 0, 0, 3.2/2, yappCircle, yappCenter],
+  [pcbLength*0.8, pcbWidth/2, 0, 0, 3.2/2, yappCircle, yappCenter],
+
+  // screw holes (front edge)
+  [pcbLength+4, 0, 0, 0, 3.2/2, yappCircle, yappCenter],
+  [pcbLength+4, pcbWidth, 0, 0, 3.2/2, yappCircle, yappCenter],
+  [pcbLength+4, pcbWidth/2, 0, 0, 3.2/2, yappCircle, yappCenter],
 
 // , [0, 0, 10, 10, 0, yappRectangle,maskHexCircles]
 // , [shellLength*2/3,shellWidth/2 ,0, 30, 20, yappCircleWithFlats, yappCenter]
@@ -301,6 +321,15 @@ cutoutsFront =
 
 cutoutsBack = 
 [
+  // USB programming hole
+  [
+    20.4 - 8,
+    pcbThickness - 3,
+    20 + 8*2, // width
+    18, // height
+    1, // radius
+    yappRoundedRect
+  ]
 ];
 
 cutoutsLeft =   
@@ -527,8 +556,35 @@ module hookLidOutside()
 module hookBaseInside()
 {
   //if (printMessages) echo("hookBaseInside() ..");
+
+  // add some mounts for zip ties (along Back edge)
+  for (y = [-20, 0, 20, 40])
+  translate([0, y+pcbLength*0.75, 10]) drawCableHolder_Z_X();
+
+  // add some mounts for zip ties (along Left edge)
+  for (x = [50, 70, 110, 130])
+  translate([x-10, 0, 10]) rotate([90,0,90]) drawCableHolder_Z_X();
+
+  // add some mounts for zip ties (along the bottom)
+  for (y = [80, 100, 120, 140, 160])
+  translate([60, y, 5]) rotate([0,90,90]) drawCableHolder_Z_X();
   
 } // hookBaseInside()
+
+module drawCableHolder_Z_X() {
+  union() {
+    // default orientation: cables run in Z, ziptie in Y
+    difference() {
+      translate([0, 0, 0]) cube([5, 8, 8]);
+
+      // spot for ziptie
+      translate([0, 0, 8/2-5/2]) cube([2, 100, 5]);
+
+      // spot for cables
+      translate([5-1.5, 8/2-5/2]) cube([1.5, 5, 100]);
+    }
+  }
+}
 
 //===========================================================
 // origin = box(0,0,0)
@@ -548,3 +604,13 @@ module hookBaseOutside()
 
 //---- This is where the magic happens ----
 YAPPgenerate();
+
+// Add the PCB for preview
+if (1) {
+  % translate([
+    wallThickness+paddingBack,
+    wallThickness+paddingLeft,
+    basePlaneThickness+standoffHeight
+  ]) 
+  translate([-24.765, -50.8]) rotate([0,0,90]) import("pcb_export.stl");
+}
