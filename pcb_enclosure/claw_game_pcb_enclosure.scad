@@ -47,9 +47,10 @@ include <library/YAPPgenerator_v30.scad>
 
 
 //-- which part(s) do you want to print?
-printBaseShell        = false;
+printBaseShell        = true;
 printLidShell         = true;
 printSwitchExtenders  = false;
+enablePCBPreview      = false;
 
 //-- pcb dimensions -- very important!!!
 pcbLength           = 158.115 - 24.765; // Front to back (Y on PCB), X on box
@@ -270,7 +271,7 @@ cutoutsBase =
   // wires passthrough
   [
     0,
-    pcbLength*0.75,
+    pcbLength*0.65,
     25,
     25,
     25/2,
@@ -328,6 +329,16 @@ cutoutsBack =
     20 + 8*2, // width
     18, // height
     1, // radius
+    yappRoundedRect
+  ],
+
+  // power supply cables
+  [
+    pcbWidth - 32,
+    pcbThickness,
+    20, // width
+    6, // height
+    2, // radius
     yappRoundedRect
   ]
 ];
@@ -559,7 +570,7 @@ module hookBaseInside()
 
   // add some mounts for zip ties (along Back edge)
   for (y = [-20, 0, 20, 40])
-  translate([0, y+pcbLength*0.75, 10]) drawCableHolder_Z_X();
+  translate([0, y+pcbLength*0.65, 10]) drawCableHolder_Z_X();
 
   // add some mounts for zip ties (along Left edge)
   for (x = [50, 70, 110, 130])
@@ -606,7 +617,7 @@ module hookBaseOutside()
 YAPPgenerate();
 
 // Add the PCB for preview
-if (1) {
+if (enablePCBPreview) {
   % translate([
     wallThickness+paddingBack,
     wallThickness+paddingLeft,
