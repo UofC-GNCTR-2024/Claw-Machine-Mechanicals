@@ -65,7 +65,7 @@ paddingRight        = 10;
 paddingLeft         = 5;
 
 //-- Edit these parameters for your own box dimensions
-wallThickness       = 2.6;
+wallThickness       = 3;
 basePlaneThickness  = 1.5;
 lidPlaneThickness   = 1.5;
 
@@ -80,9 +80,9 @@ lidWallHeight       = 8;
 
 //-- ridge where base and lid off box can overlap
 //-- Make sure this isn't less than lidWallHeight
-ridgeHeight         = 5.0;
+ridgeHeight         = 8;
 ridgeSlack          = 0.2;
-roundRadius         = 3.0;
+roundRadius         = 1.0;
 
 //-- How much the PCB needs to be raised from the base
 //-- to leave room for solderings and whatnot
