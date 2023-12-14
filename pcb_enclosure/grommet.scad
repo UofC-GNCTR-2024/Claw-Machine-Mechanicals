@@ -6,23 +6,23 @@
 /* [Global] */
 
 // Which part to print
-part = "nut"; // [tube:Tube, nut:Nut, lid:Lid, all:All]
+part = "tube"; // [tube:Tube, nut:Nut, lid:Lid, all:All]
 
 /* [Tube] */
 
 // The diameter of the hole this thing is going to be inserted in
-holeDiameter = 25.4 * 1.5 - 2;
+holeDiameter = 20;
 // The measurement of the depth of the hole. Don't account for the size of the nut or top ring.
 holeDepth = 20;
 // Width of the block (The stop, the limit, the flat ring that touches the board). Added to the radius of the hole
-blockWidth = 8;
+blockWidth = 12;
 
 /* [Nut] */
 
 // Width of the nut ring. This is not the diameter. It is milimeters added to the radius of the hole
-nutWidth = 20;
+nutWidth = 33;
 // Thickness of the nut
-nutThickness = 10;
+nutThickness = 3;
 
 /* [Lid] */
 
