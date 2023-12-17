@@ -60,6 +60,8 @@ Mechanical components, docs, and CAD for the UofC GNCTR 2024 claw machine game
     * License: [Creative Commons - Attribution](https://creativecommons.org/licenses/by/4.0/) license.
 9. X Idler Mount (`x_idler_mount.scad`)
     * Raises the idlers up to the same height as the x-axis steppers
+10. Enclosure for PCB
+    * Source: based on the [Yet Another Parametric Projectbox Box (YAPP)](https://github.com/mrWheel/YAPP_Box).
 
 ## Axis Definitions
 1. X-Axis = parallel to the side with two separated motors/linear rails
