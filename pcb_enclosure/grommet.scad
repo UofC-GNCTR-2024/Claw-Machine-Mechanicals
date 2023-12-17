@@ -11,9 +11,9 @@ part = "tube"; // [tube:Tube, nut:Nut, lid:Lid, all:All]
 /* [Tube] */
 
 // The diameter of the hole this thing is going to be inserted in
-holeDiameter = 20;
+holeDiameter = 22;
 // The measurement of the depth of the hole. Don't account for the size of the nut or top ring.
-holeDepth = 20;
+holeDepth = 12;
 // Width of the block (The stop, the limit, the flat ring that touches the board). Added to the radius of the hole
 blockWidth = 12;
 
@@ -46,11 +46,11 @@ tubeExtraLength = 0;
 // Thickness of the tube. The higher, the smaller the inner hole
 tubeThickness = 2;
 // Width of the screw thread
-screwThreadWidth = 1.6;
+screwThreadWidth = 1.2;
 // Depth of the screw thread. The higher, the smaller the tube
-screwThreadDepth = 0.7;
+screwThreadDepth = 1.2;
 // Number of threads of the screw
-numberOfThreads = 2;
+numberOfThreads = 3;
 // The thickness of the block. Increasing it won't affect the length.
 blockThickness = 1.6;
 // Block type
@@ -58,7 +58,7 @@ blockType = "conic"; // [conic:Conic, cylindrical:Cylindrical]
 // The sides of the polygon of the nut. If you prefer a cylinder, set a high number like 100
 nutFaces = 8;
 // Space between the nut and the screw, to avoid it being too tight and maybe unscrewable
-nutClearance = 1;
+nutClearance = 0.1;
 
 /* [Hidden] */
 
