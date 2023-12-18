@@ -8,8 +8,6 @@ yellow_button_d = 24;
 flashing_button_d = 24;
 flashing_button_major_d = 65; // clearance for the whole thing
 
-// TODO: flashing button info
-
 stick_d = 15;
 stick_screw_sep_major = 85;
 stick_screw_sep_minor = 40;
