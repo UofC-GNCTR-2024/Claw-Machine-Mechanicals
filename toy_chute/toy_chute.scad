@@ -28,8 +28,8 @@ $fn = 60;
 
 ////////////////////////////////////////////////////////
 // Printable Chuncks
-//make_top_printable_chunck();
-make_chute_printable_chunck() // bottom part
+make_top_printable_chunck();
+//make_chute_printable_chunck() // bottom part
 ////////////////////////////////////////////////////////
 
 echo("Total full chute height:", top_wall_h+wood_height+round_chute_target_h);
@@ -164,11 +164,18 @@ module full_chute(draw_chute_joiners) {
 			right(general_overall_width) xcyl(d=screw_d, h=10);
 		}
 		
-		// remove holes from chute joiners (back side)
+		// remove holes from chute joiners (back side, and now out the front)
 		down(wood_height-10)
 		for (x = chute_joiner_x_list) {
 			right(x)
-			back(general_overall_width) ycyl(d=screw_d, h=10);
+			back(general_overall_width) ycyl(d=screw_d, h=1000, anchor=CENTER);
+		}
+
+		// remove holes to screw into plywood (front side, at the top)
+		up(top_wall_h-10)
+		for (x = [chute_joiner_x_list[0], chute_joiner_x_list[2]]) {
+			right(x)
+			back(general_overall_width) ycyl(d=screw_d, h=1000, anchor=BACK);
 		}
 
 
@@ -190,8 +197,8 @@ module full_chute(draw_chute_joiners) {
 
 module make_top_polygon_above_frame() {
 	difference() {
-		rect(
-			[200, 200],
+		back(20) rect(
+			[200, 200-20],
 			anchor=FRONT+LEFT,
 			rounding=3
 		);
