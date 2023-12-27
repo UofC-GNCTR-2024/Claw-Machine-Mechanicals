@@ -42,12 +42,13 @@ if (0) lcd_riser();
 if (0) player_panel();
 
 // for export
-if (1) {
+if (0) {
     xrot(170 - 0.25)
     xrot(face_angle, cp=[0, face_length/2, wood_h])
     up(wood_h)
     player_panel();
 }
+player_panel_bottom();
 
 module lcd_riser() {
     h = 5;
@@ -67,6 +68,37 @@ module lcd_riser() {
             [16, 100, 3],
             anchor=BOTTOM+FRONT
         );
+    }
+}
+
+
+module player_panel_bottom() {
+    difference() {
+        // draw the outside of the panel
+        union() {
+            difference() {
+                cuboid(
+                    [face_width, face_length, 2],
+                    rounding=2, except=BOTTOM,
+                    anchor=BOTTOM
+                );
+
+                // add screw holes for into the mounting hole blocks
+                for (xmir = [1, 0]) for (ymir = [1, 0]) mirror([xmir, 0, 0]) mirror([0, ymir, 0])
+                translate([face_width/2-wall_t, face_length/2-wall_t, 0]) {           
+                    // remove screw hole
+                    translate([-6, -6, 0]) zcyl(d=3.2, h=50, anchor=CENTER);
+                }
+
+                // remove filament saver
+                up(1)
+                cuboid(
+                    [face_width-25, face_length-25, 100],
+                    rounding=5, except=[TOP,BOTTOM],
+                    anchor=BOTTOM
+                );
+            }
+        }
     }
 }
 
@@ -135,7 +167,7 @@ module player_panel() {
                     translate([-6, -6, 0]) zcyl(d=2.7, h=50, anchor=BOTTOM);
 
                 }
-            } // FIXME: remove a hole, and put it in every corner; also check the length/width args around
+            }
         }
 
         ///////////////////////////////////////////////
