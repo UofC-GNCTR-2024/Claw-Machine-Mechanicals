@@ -45,10 +45,10 @@ pulley_od_max = 50;
 pulley_len = 22; // height with no retainer_lip is 22
 
 // for M6 bolt/nut
-//pulley_support_bolt_d = 6.1;
-//pulley_support_nut_w = 10+0.5;
 pulley_support_bolt_d = 46+0.5;
 pulley_support_nut_w = 1; //unused
+pulley_frictional_support_wall_t = 3;
+pulley_frictional_support_len = 12; // len past edge of block
 
 cord_d = 6;
 cord_torus_d_min = 5;
@@ -67,11 +67,11 @@ limit_screw_sep = 10;
 
 $fn = 60;
 
-make_y_sled(TOP);
+// make_y_sled(TOP);
 //back(100) make_y_sled(BOTTOM); // for preview
 
-//make_y_sled(BOTTOM);
-//back(100) make_y_sled(TOP); // for preview
+make_y_sled(BOTTOM);
+back(100) make_y_sled(TOP); // for preview
 
 module make_y_sled(top_or_bottom) {
 	difference() {
@@ -104,6 +104,18 @@ module make_y_sled(top_or_bottom) {
 				anchor=TOP,
 				rounding=3, except=[TOP]
 			);
+
+			// add on extra pulley holder (cyl in -X)
+			down(block_t/2 + pulley_od_max/2) {
+				// pulley round frictional support out -X
+				xcyl(
+					d=pulley_support_bolt_d + 2*pulley_frictional_support_wall_t,
+					h=block_w/2 + pulley_frictional_support_len,
+					anchor=RIGHT,
+					$fn=(pulley_support_bolt_d>20?150:20)
+				);
+			}
+
 		}
 
 		// remove gearbox screw holes
@@ -124,7 +136,7 @@ module make_y_sled(top_or_bottom) {
 			// motor axis hole out +X
 			xcyl(d=gearbox_shaft_hole_d, h=100, anchor=LEFT);
 
-			// support bolt hole (M6) out -X
+			// pulley round frictional support out -X
 			xcyl(d=pulley_support_bolt_d, h=100, anchor=RIGHT, $fn=(pulley_support_bolt_d>20?150:20));
 
 			// support bolt nut (M6) out -X
@@ -145,7 +157,7 @@ module make_y_sled(top_or_bottom) {
 		// 	xcyl(d=pulley_od_max, h=pulley_len, anchor=CENTER);
 		// }
 
-		// remove where pulley goes (as a box, all the way through)
+		// remove where pulley goes (as a box, all the way through in Z)
 		if (top_or_bottom == BOTTOM)
 		cuboid(
 			[pulley_len, pulley_od_max, 400],
@@ -153,12 +165,12 @@ module make_y_sled(top_or_bottom) {
 		);
 
 		// remove limit switch mounting holes
-		for (rot = [0,90]) zrot(rot)
-		down(block_t/2 + gearbox_block_h - 5)
-		ycopies(spacing = 10, n = (rot==0 ? 6 : 2)) {
-			// screw hole
-			xcyl(d=limit_screw_d, h=100, anchor=CENTER, $fn=20);
-		}
+		// for (rot = [0,90]) zrot(rot)
+		// down(block_t/2 + gearbox_block_h - 5)
+		// ycopies(spacing = 10, n = (rot==0 ? 6 : 2)) {
+		// 	// screw hole
+		// 	xcyl(d=limit_screw_d, h=100, anchor=CENTER, $fn=20);
+		// }
 
 		// remove Y-Axis rails
 		for(y = [1,-1]) fwd(y*rail_sep/2) {
@@ -171,7 +183,8 @@ module make_y_sled(top_or_bottom) {
 		}
 
 		// remove bolts to hold the top and middle parts together
-		for (x = [1,-1,0]) for (y = [1,-1]) for (side = (x==0 ? [1] : [1,-1]))
+		side = 1;
+		for (x = [1,-1,0]) for (y = [1,-1]) //for (side = (x==0 ? [1] : [1,-1]))
 		translate([x*18, y*(rail_sep/2 + 11*side), 0]) {
 			// screw hole
 			zcyl(d=screw_d, h=100);
