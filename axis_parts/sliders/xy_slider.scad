@@ -28,21 +28,42 @@ screw_d = 3.5;
 
 $fn = 60;
 
-// top_or_bottom = BOTTOM; // TOP or BOTTOM
+top_or_bottom = BOTTOM; // TOP or BOTTOM
 // make_xy_slider(false, top_or_bottom); // no motor
-// back(100) make_xy_slider(true, top_or_bottom); // with motor
-left(60) make_xy_slider_bumper(); // A
-mirror([1,0,0]) make_xy_slider_bumper(); // B
+//back(100) make_xy_slider(true, top_or_bottom); // with motor
+left(60) make_xy_slider_bumper(true); // A (with the motor, L shapded)
+// mirror([1,0,0]) make_xy_slider_bumper(false); // B (without the motor/with the idler pulley)
 
-module make_xy_slider_bumper() {
+module make_xy_slider_bumper(motor) {
 	difference() {
 		union() {
-			down(block_t/2)
-			fwd(block_l/2) cuboid(
-				[block_w, 25, 10],
-				anchor=RIGHT+FRONT+TOP,
-				rounding=3, except=[TOP,BOTTOM]
-			);
+			if (!motor) {
+				down(block_t/2)
+				fwd(block_l/2) cuboid(
+					[block_w, 25, 10],
+					anchor=RIGHT+FRONT+TOP,
+					rounding=3, except=[TOP,BOTTOM]
+				);
+			}
+
+			else { // motor is 2 blocks to make an L
+				down(block_t/2) {
+					fwd(block_l/2) cuboid(
+						[block_w, 10, 10],
+						anchor=RIGHT+FRONT+TOP,
+						rounding=3, except=[TOP,BOTTOM]
+					);
+
+					left(block_w)
+					fwd(block_l/2) cuboid(
+						[10, 25, 10],
+						anchor=LEFT+FRONT+TOP,
+						rounding=3, except=[TOP,BOTTOM]
+					);
+
+				}
+			}
+
 		}
 		
 		// remove X-Axis bearings
@@ -54,9 +75,9 @@ module make_xy_slider_bumper() {
 		for (xy = [
 				[bearing_center_xcoord-13, 25], // near bearing
 				[bearing_center_xcoord-13, 0], // near bearing
-				[bearing_center_xcoord+8, 0], // near bearing
+				if (!motor) [bearing_center_xcoord+8, 0], // near bearing
 				[-10, rail_sep/2+8], // near rails
-				[-10, rail_sep/2-8] // near rails
+				if (!motor) [-10, rail_sep/2-8] // near rails
 			
 			])
 			translate([xy[0], y*xy[1], 0])
