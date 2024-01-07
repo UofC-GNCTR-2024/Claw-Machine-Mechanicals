@@ -48,12 +48,13 @@ pulley_len = 22; // height with no retainer_lip is 22
 pulley_support_bolt_d = 46+0.5;
 pulley_support_nut_w = 1; //unused
 pulley_frictional_support_wall_t = 3;
-pulley_frictional_support_len = 12; // len past edge of block
+pulley_frictional_support_len = 14; // len past edge of block
 
 cord_d = 6;
 cord_torus_d_min = 5;
-cord_torus_offset = 12; // diameter of main part of pulley, divided by 2, plus a bit to get it close to a limit switch
+cord_torus_offset = 10; // diameter of main part of pulley, divided by 2, plus a bit to get it close to a limit switch
 
+gearbox_block_w = pulley_len + 2*gearbox_plate_t_in_x;
 gearbox_block_l = pulley_od_max + gearbox_plate_t_in_y*2;
 gearbox_block_h = max(
 					pulley_od_max,
@@ -65,13 +66,17 @@ limit_screw_d = 1.9; // M2 thread-forming
 limit_screw_l = 8;
 limit_screw_sep = 10;
 
+// z-protection tube to prevent lifting the z-axis too high
+zprot_tube_od = 30;
+zprot_tube_len = 40; // get it past the sticking-out motor
+
 $fn = 60;
 
 // make_y_sled(TOP);
 //back(100) make_y_sled(BOTTOM); // for preview
 
 make_y_sled(BOTTOM);
-back(100) make_y_sled(TOP); // for preview
+// back(100) make_y_sled(TOP); // for preview
 
 module make_y_sled(top_or_bottom) {
 	difference() {
@@ -85,7 +90,7 @@ module make_y_sled(top_or_bottom) {
 			// add on holder block for gearbox
 			down(block_t/2) cuboid(
 				[
-					pulley_len + 2*gearbox_plate_t_in_x,
+					gearbox_block_w,
 					gearbox_block_l,
 					gearbox_block_h
 				],
@@ -97,7 +102,7 @@ module make_y_sled(top_or_bottom) {
 			down(block_t/2)
 			cuboid(
 				[
-					pulley_len + 2*gearbox_plate_t_in_x + 2*3,
+					gearbox_block_w + 2*3,
 					rail_sep + 2*7,
 					6
 				],
@@ -110,7 +115,7 @@ module make_y_sled(top_or_bottom) {
 				// pulley round frictional support out -X
 				xcyl(
 					d=pulley_support_bolt_d + 2*pulley_frictional_support_wall_t,
-					h=block_w/2 + pulley_frictional_support_len,
+					h=gearbox_block_w/2 + pulley_frictional_support_len,
 					anchor=RIGHT,
 					$fn=(pulley_support_bolt_d>20?150:20)
 				);
@@ -123,11 +128,37 @@ module make_y_sled(top_or_bottom) {
 			down(-gearbox_dist_top_bolts_to_shaft + y*gearbox_bolt_sep_b) {
 				xcyl(
 					d=gearbox_bolt_head_d + 2*3,
-					h=block_w/2 + pulley_frictional_support_len,
+					h=gearbox_block_w/2 + pulley_frictional_support_len,
 					anchor=RIGHT,
 				);
 			}
 
+			// add on some quick zip tie holes (on gearbox)
+			down(block_t/2 + pulley_od_max/2 + 30) {
+				// on +Y face
+				back(gearbox_block_l/2 + 2.5) {
+					left(10)
+					yrot(90)
+					torus(id=6, d_min = 4);
+
+					right(10)
+					yrot(90)
+					torus(id=6, d_min = 4);
+				}
+
+				// on +X and -X
+				back(gearbox_block_l/2 - 10) {
+					// +X
+					right(gearbox_block_w/2)
+					xrot(90)
+					torus(id=6, d_min = 4);
+					
+					// -X
+					left(gearbox_block_w/2)
+					xrot(90)
+					torus(id=6, d_min = 4);
+				}
+			}
 		}
 
 		// remove gearbox screw holes
@@ -158,7 +189,7 @@ module make_y_sled(top_or_bottom) {
 
 			// remove screw hole in the pulley_frictional_support to really lock the pulley in
 			// (prevents failure where the pulley falls out)
-			left(block_w/2 + 8) {
+			left(gearbox_block_w/2 + 10) {
 				ycyl(d=4.2, h=100);
 				zcyl(d=4.2, h=100);
 			}
@@ -242,44 +273,68 @@ module make_y_sled(top_or_bottom) {
 	// add the torus for the cord, and its supports
 	if (top_or_bottom == BOTTOM) {
 		difference() {
-			intersection() {
-				fwd (cord_torus_offset)
-				union() {
-					
-					// make the X
-					down(block_t/2 + gearbox_block_h)
-					for (x = [1, -1]) for (y = [1, -1])
-					hull() {
-						// center one
-						zcyl(d=12, h=bot_plate_t, anchor=BOTTOM);
+			union() {
+				intersection() {
+					fwd (cord_torus_offset)
+					union() {
+						
+						// make the X/cross
+						down(block_t/2 + gearbox_block_h)
+						for (x = [1, -1]) for (y = [1, -1])
+						hull() {
+							// center one
+							zcyl(d=12, h=bot_plate_t, anchor=BOTTOM);
 
-						// out ones
-						translate([x*20, y*30])
-						zcyl(d=6, h=bot_plate_t, anchor=BOTTOM, $fn=8);
+							// out ones
+							translate([x*20, y*30])
+							zcyl(d=6, h=bot_plate_t, anchor=BOTTOM, $fn=8);
+						}
 					}
+
+					// intersect with gearbox block
+					down(block_t/2) cuboid(
+						[
+							pulley_len + 2*gearbox_plate_t_in_x,
+							gearbox_block_l,
+							gearbox_block_h
+						],
+						anchor=TOP,
+						rounding=3, except=[TOP]
+					);
 				}
 
-				// intersect with gearbox block
-				down(block_t/2) cuboid(
-					[
-						pulley_len + 2*gearbox_plate_t_in_x,
-						gearbox_block_l,
-						gearbox_block_h
-					],
+				// add on zprot_tube
+				fwd (cord_torus_offset)
+				down(block_t/2 + gearbox_block_h - bot_plate_t/2)
+				zcyl(
+					h=zprot_tube_len,
+					d1=zprot_tube_od,
+					d2=gearbox_block_w,
 					anchor=TOP,
-					rounding=3, except=[TOP]
+					rounding1=3,
+					$fn=150
 				);
-			}
+
+			} // end union
 
 			// remove hole for cord
 			fwd (cord_torus_offset)
-			zcyl(d=cord_d + cord_torus_d_min, h=200);
+			zcyl(d=cord_d + cord_torus_d_min, h=500);
 		}
 
 		
-		// make the torus for the cord
+		// make the torus for the cord (closer to motor)
 		fwd (cord_torus_offset)
 		down(block_t/2 + gearbox_block_h - bot_plate_t/2)
+		torus(
+			d_min = cord_torus_d_min,
+			id = cord_d - 0.5
+		);
+
+		// make the torus for the cord (farther from motor: zprot_tube)
+		fwd (cord_torus_offset)
+		down(block_t/2 + gearbox_block_h - bot_plate_t/2
+			+ zprot_tube_len - cord_torus_d_min/2)
 		torus(
 			d_min = cord_torus_d_min,
 			id = cord_d - 0.5
