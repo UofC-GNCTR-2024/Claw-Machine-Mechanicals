@@ -44,7 +44,7 @@ bot_plate_t = 3;
 pulley_od_max = 50;
 pulley_len = 22; // height with no retainer_lip is 22
 
-// for M6 bolt/nut
+// for supporting the OD of the pulley in the -X side
 pulley_support_bolt_d = 46+0.5;
 pulley_support_nut_w = 1; //unused
 pulley_frictional_support_wall_t = 3;
@@ -116,6 +116,18 @@ module make_y_sled(top_or_bottom) {
 				);
 			}
 
+			// add on support around bottom gearbox screw holes for printability
+			down(block_t/2 + pulley_od_max/2)
+			for (y=[1,0]) for (z=[1,-1])
+			fwd(z*gearbox_bolt_sep_a/2)
+			down(-gearbox_dist_top_bolts_to_shaft + y*gearbox_bolt_sep_b) {
+				xcyl(
+					d=gearbox_bolt_head_d + 2*3,
+					h=block_w/2 + pulley_frictional_support_len,
+					anchor=RIGHT,
+				);
+			}
+
 		}
 
 		// remove gearbox screw holes
@@ -139,13 +151,17 @@ module make_y_sled(top_or_bottom) {
 			// pulley round frictional support out -X
 			xcyl(d=pulley_support_bolt_d, h=100, anchor=RIGHT, $fn=(pulley_support_bolt_d>20?150:20));
 
-			// support bolt nut (M6) out -X
-			// xcyl(
-			// 	r=pulley_support_nut_w/sqrt(3),
-			// 	h=pulley_len/2 + 2.3,
-			// 	$fn=6,
-			// 	anchor=RIGHT
-			// );
+			// motor screw head access out +Y
+			// optional; looks worse, but easier repair
+			right(pulley_len/2 - 2)
+			ycyl(d=4.2, h=100, anchor=FRONT);
+
+			// remove screw hole in the pulley_frictional_support to really lock the pulley in
+			// (prevents failure where the pulley falls out)
+			left(block_w/2 + 8) {
+				ycyl(d=4.2, h=100);
+				zcyl(d=4.2, h=100);
+			}
 		}
 
 		// remove where pulley goes (as a cyl)
