@@ -45,7 +45,7 @@ pulley_od_max = 50;
 pulley_len = 22; // height with no retainer_lip is 22
 
 // for supporting the OD of the pulley in the -X side
-pulley_support_bolt_d = 46+0.5;
+pulley_support_d = 46+0.5;
 pulley_support_nut_w = 1; //unused
 pulley_frictional_support_wall_t = 3;
 pulley_frictional_support_len = 14; // len past edge of block
@@ -67,7 +67,7 @@ limit_screw_l = 8;
 limit_screw_sep = 10;
 
 // z-protection tube to prevent lifting the z-axis too high
-zprot_tube_od = 30;
+zprot_tube_od = gearbox_block_w; // 39ish would be ideal, but can't be bigger than gearbox_block_w
 zprot_tube_len = 40; // get it past the sticking-out motor
 
 $fn = 60;
@@ -114,10 +114,10 @@ module make_y_sled(top_or_bottom) {
 			down(block_t/2 + pulley_od_max/2) {
 				// pulley round frictional support out -X
 				xcyl(
-					d=pulley_support_bolt_d + 2*pulley_frictional_support_wall_t,
+					d=pulley_support_d + 2*pulley_frictional_support_wall_t,
 					h=gearbox_block_w/2 + pulley_frictional_support_len,
 					anchor=RIGHT,
-					$fn=(pulley_support_bolt_d>20?150:20)
+					$fn=(pulley_support_d>20?150:20)
 				);
 			}
 
@@ -159,6 +159,13 @@ module make_y_sled(top_or_bottom) {
 					torus(id=6, d_min = 4);
 				}
 			}
+
+			// for around M3 nut to hold it in
+			down(block_t/2 + pulley_od_max/2) {
+				left(gearbox_block_w/2 + 10) {
+					ycyl(d=10, h=pulley_support_d + 2*8);
+				}
+			}
 		}
 
 		// remove gearbox screw holes
@@ -180,7 +187,7 @@ module make_y_sled(top_or_bottom) {
 			xcyl(d=gearbox_shaft_hole_d, h=100, anchor=LEFT);
 
 			// pulley round frictional support out -X
-			xcyl(d=pulley_support_bolt_d, h=100, anchor=RIGHT, $fn=(pulley_support_bolt_d>20?150:20));
+			xcyl(d=pulley_support_d, h=100, anchor=RIGHT, $fn=(pulley_support_d>20?150:20));
 
 			// motor screw head access out +Y
 			// optional; looks worse, but easier repair
@@ -190,8 +197,18 @@ module make_y_sled(top_or_bottom) {
 			// remove screw hole in the pulley_frictional_support to really lock the pulley in
 			// (prevents failure where the pulley falls out)
 			left(gearbox_block_w/2 + 10) {
-				ycyl(d=4.2, h=100);
-				zcyl(d=4.2, h=100);
+				
+				// horizontal M3 with 2 separate bolts/recessed nuts
+				ycyl(d=3.2, h=100);
+				ycyl(r=5.5/sqrt(3), h=pulley_support_d + 2*4, $fn=6);
+
+				// slightly rotated M4 with nylock
+				xrot(25) {
+					ycyl(d=4.2, h=100);
+					
+					back(pulley_support_d/2 + 1)
+					ycyl(r=7/sqrt(3), h=100, anchor=FRONT, $fn=6);
+				}
 			}
 		}
 
